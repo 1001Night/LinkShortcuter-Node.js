@@ -52,6 +52,7 @@ node index.js
 
 Установить PostgreSQL:
 [Официальный сайт](https://www.postgresql.org/download/)
+
 Docker: docker pull postgres:14.21-trixie
 
 1. Создать базу данных:
@@ -73,6 +74,36 @@ GRANT ALL PRIVILEGES ON DATABASE anyname TO user;
 ```
 
 ## 🤺 Дополнительно
+
+docker-compose.yml:
+```
+services:
+  app:
+    image: night1001/lscuter:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_USER=postgres
+      - DB_HOST=db
+      - DB_NAME=postgres
+      - DB_PASSWORD=PASSWORD
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14.21-trixie
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=PASSWORD
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+```
 
 Сервер будет запущен на http://0.0.0.0:3000
 Протестировать работу бэкенда можно командами:
