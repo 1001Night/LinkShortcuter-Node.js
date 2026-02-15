@@ -7,7 +7,23 @@ NodeJS link shortcuter backend (Express, PostgreSQL)
 Он представляет собой бэкенд для сокращателя ссылок, который хранит данные о созданных сокращённых ссылках в БД PostgreSQL.  
 ---
 
-## ⚙️ Установка проекта (Git)
+## ⚙️ Установка проекта (Docker) (Рекомендуется)
+1. Скачать образ:
+```bash
+docker pull night1001/lscuter:latest
+```
+2. Запустить контейнер (сперва надо запустить БД):
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e DB_USER=postgres \
+  -e DB_HOST=127.0.0.1 \
+  -e DB_NAME=postgres \
+  -e DB_PASSWORD=PASSWORD \
+  night1001/lscuter:latest
+```
+
+## ⚙️ Ручная установка проекта (Git)
 
 1. Клонировать репозиторий:
 ```bash
@@ -18,29 +34,25 @@ cd LinkShortcuter-Node.js
 ```bash
 npm install
 ```
+3. Указать ваши настройки в .env 
+```ini
+DB_USER=postgres
+DB_HOST=127.0.0.1
+DB_NAME=postgres
+DB_PASSWORD=PASSWORD
+DB_PORT=5432
+```
+4. Запустить сервер:
+```bash
+node index.js
+```
 
-## ⚙️ Установка проекта (Docker)
-1. Скачать образ:
-```bash
-docker pull night1001/lscuter:latest
-```
-2. Взять example.env из образа и отредактировать:
-```bash
-container_id=$(docker create night1001/lscuter:latest)
-docker cp $container_id:/example.env ./.env
-docker rm $container_id
-nano /.env
-```
-3. Запустить контейнер (сперва надо запустить БД):
-```bash
-docker run --env-file .env -p 3000:3000 -d night1001/lscuter:latest
-```
 
 ## 🗄 Установка и настройка PostgreSQL
 
 Установить PostgreSQL:
 [Официальный сайт](https://www.postgresql.org/download/)
-Docker: docker pull postgres:13-trixie
+Docker: docker pull postgres:14.21-trixie
 
 1. Создать базу данных:
 ```sql
@@ -60,31 +72,16 @@ CREATE USER user WITH PASSWORD 'yourpassword';
 GRANT ALL PRIVILEGES ON DATABASE anyname TO user;
 ```
 
-## ▶️ Запуск проекта
-
-1. Указать ваши настройки в .env 
-```ini
-DB_USER=user
-DB_HOST=localhost
-DB_NAME=anyname
-DB_PASSWORD=PASSWORD
-DB_PORT=5432
-```
-2. Запустить сервер:
-```bash
-npm start
-```
-
 ## 🤺 Дополнительно
 
-Сервер будет запущен на http://localhost:3000
+Сервер будет запущен на http://0.0.0.0:3000
 Протестировать работу бэкенда можно командами:
 
 1. Добавить ссылку: 
 ```bash
-curl -X POST http://localhost:3000/api/links -H "Content-Type: application/json" -d "{\"redirect\":\"https://google.com\",\"owner\":\"test_user\"}"
+curl -X POST http://0.0.0.0:3000/api/links -H "Content-Type: application/json" -d "{\"redirect\":\"https://google.com\",\"owner\":\"test_user\"}"
 ```
 2. Удалить ссылку:
 ```bash
-curl -X DELETE http://localhost:3000/delete/{link}
+curl -X DELETE http://0.0.0.0:3000/delete/{link}
 ```
